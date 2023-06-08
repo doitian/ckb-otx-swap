@@ -1,5 +1,4 @@
-import { config as lumosConfig } from "@ckb-lumos/lumos";
-import { Indexer } from "@ckb-lumos/lumos";
+import { Indexer, RPC, config as lumosConfig } from "@ckb-lumos/lumos";
 
 import Wallet from "./wallet";
 
@@ -63,6 +62,10 @@ export default class RuntimeConfig {
 
   buildCkbIndexer() {
     return new Indexer(this.getCkbRpcUrl());
+  }
+
+  buildCkbRpcClient() {
+    return new RPC(this.getCkbRpcUrl());
   }
 
   getOtxPoolRpcUrl() {

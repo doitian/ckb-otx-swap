@@ -1,7 +1,7 @@
-const EC = require("elliptic").ec;
-const ec = new EC("secp256k1");
+import { ec as EC } from "elliptic";
+import { helpers, hd, commons, utils } from "@ckb-lumos/lumos";
 
-import { helpers, hd } from "@ckb-lumos/lumos";
+const ec = new EC("secp256k1");
 
 function expectHex(key) {
   if (key.startsWith("0x")) {
@@ -19,6 +19,16 @@ export default class Wallet {
       `0x${keypair.getPublic(true, "hex")}`
     );
     this.ckbChainConfig = ckbChainConfig;
+
+    this.signTx = (txSkeleton) => {
+      const txForSigning = commons.common.prepareSigningEntries(txSkeleton);
+      const signatures = txForSigning
+        .get("signingEntries")
+        .map(({ message }) =>
+          hd.key.signRecoverable(message, `0x${keypair.getPrivate("hex")}`)
+        );
+      return helpers.sealTransaction(txForSigning, signatures.toJSON());
+    };
   }
 
   // Return a script that uses the wallet pubkey hash as args
@@ -46,6 +56,16 @@ export default class Wallet {
 
   otxLockScript() {
     return this.pkhScriptByScriptName("OTXLOCK");
+  }
+
+  sudtTypeScript() {
+    const script = this.ckbChainConfig.SCRIPTS["SUDT"];
+
+    return {
+      codeHash: script.CODE_HASH,
+      hashType: script.HASH_TYPE,
+      args: utils.computeScriptHash(this.secp256k1LockScript()),
+    };
   }
 
   otxAddress() {

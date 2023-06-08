@@ -22,8 +22,8 @@ export default class AssetsIndexer {
         typeScript.codeHash === SUDT.CODE_HASH &&
         typeScript.hashType === SUDT.HASH_TYPE
       ) {
-        const oldBalance = sudtBalances[cell.cellOutput.args] ?? BI.from(0);
-        sudtBalances[cell.cellOutput.args] = oldBalance.add(
+        const oldBalance = sudtBalances[typeScript.args] ?? BI.from(0);
+        sudtBalances[typeScript.args] = oldBalance.add(
           number.Uint128LE.unpack(cell.data)
         );
       }
