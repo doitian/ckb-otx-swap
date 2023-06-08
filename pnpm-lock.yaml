@@ -20,6 +20,9 @@ dependencies:
   autoprefixer:
     specifier: 10.4.14
     version: 10.4.14(postcss@8.4.24)
+  elliptic:
+    specifier: ^6.5.4
+    version: 6.5.4
   eslint:
     specifier: 8.42.0
     version: 8.42.0
