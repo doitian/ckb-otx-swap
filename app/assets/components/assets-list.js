@@ -11,13 +11,13 @@ export function renderBalance(asset) {
   return `${asset.balance}`;
 }
 
-export default function AssetsList({ title, address, assets }) {
+export default function AssetsList({ title, address, explorerUrl, assets }) {
   return (
     <section className="mb-8">
       <h3 className="font-bold leading-4 text-gray-900 sm:truncate sm:tracking-tight">{title}</h3>
       <aside className="mb-8">
         <p className="flex items-baseline">
-          <AddressText className="grow" address={address} />
+          <AddressText className="grow" address={address} explorerUrl={explorerUrl} />
           <a
             href="https://faucet.nervos.org/"
             target="_blank"

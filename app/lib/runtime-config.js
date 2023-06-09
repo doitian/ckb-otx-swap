@@ -16,6 +16,7 @@ const ENV_KEYS = [
 
 const CKB_ENVS = {
   AGGRON4: {
+    EXPLORER_URL: "https://pudge.explorer.nervos.org",
     ...lumosConfig.predefined.AGGRON4,
     SCRIPTS: {
       ...lumosConfig.predefined.AGGRON4.SCRIPTS,

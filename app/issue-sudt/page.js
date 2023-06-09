@@ -4,7 +4,7 @@ import { injectConfig } from "../lib/runtime-config";
 import { renderCkbBalance } from "../lib/view-utils";
 import AssetsIndexer from "../lib/assets-indexer";
 import PageTitle from "../components/page-title";
-import AssetsList from "../assets/components/assets-list";
+import AddressText from "../components/address-text";
 import { issueSudt } from "./actions";
 
 export const metadata = {
@@ -13,9 +13,9 @@ export const metadata = {
 
 const MIN_OWNER_BALANCE = BI.from(10).pow(8).mul(100);
 
-function Claim({ address, balance }) {
+function Claim({ address, explorerUrl, balance }) {
   return (
-    <section>
+    <section className="mb-8">
       <h3 className="text-xl leading-4 mb-4">Insifficient CKB to Issue SUDT</h3>
 
       <p className="mb-4">
@@ -23,7 +23,10 @@ function Claim({ address, balance }) {
         the minimum required balance is {renderCkbBalance(MIN_OWNER_BALANCE)}.
       </p>
 
-      <p className="mb-4">Please claim CKB to the address: {address}</p>
+      <p className="mb-4">
+        Please claim CKB to the address{" "}
+        <AddressText address={address} explorerUrl={explorerUrl} />
+      </p>
 
       <a
         href="https://faucet.nervos.org/"
@@ -84,7 +87,11 @@ export default async function IssueSudtPage({ config = injectConfig() }) {
         {balanceIsSufficient ? (
           <IssueForm />
         ) : (
-          <Claim address={ownerAddress} balance={ckbAssets[0].balance} />
+          <Claim
+            address={ownerAddress}
+            explorerUrl={config.ckbChainConfig.EXPLORER_URL}
+            balance={ckbAssets[0].balance}
+          />
         )}
       </div>
     </>

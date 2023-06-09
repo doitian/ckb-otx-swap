@@ -23,6 +23,7 @@ export default async function AssetsPage({ config = injectConfig() }) {
       <AssetsList
         title="OTX Account"
         address={wallet.otxAddress()}
+        explorerUrl={config.ckbChainConfig.EXPLORER_URL}
         assets={otxAssets}
       />
 
