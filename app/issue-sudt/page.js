@@ -1,5 +1,7 @@
 import { BI } from "@ckb-lumos/lumos";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
+import * as styles from "../styles";
 import { injectConfig } from "../lib/runtime-config";
 import { renderCkbBalance } from "../lib/view-utils";
 import AssetsIndexer from "../lib/assets-indexer";
@@ -53,10 +55,7 @@ function IssueForm() {
         type="number"
       />
 
-      <button
-        className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        type="submit"
-      >
+      <button className={styles.solidButton.primary} type="submit">
         Issue
       </button>
     </form>
@@ -78,11 +77,6 @@ export default async function IssueSudtPage({ config = injectConfig() }) {
     <>
       <PageTitle>{metadata.title}</PageTitle>
 
-      <p>SUDT Type Script:</p>
-      <pre className="border rounded p-2 mb-6 leading-8 text-gray-600">
-        <code>{JSON.stringify(wallet.sudtTypeScript(), null, 2)}</code>
-      </pre>
-
       <div>
         {balanceIsSufficient ? (
           <IssueForm />
@@ -94,6 +88,26 @@ export default async function IssueSudtPage({ config = injectConfig() }) {
           />
         )}
       </div>
+
+      <footer className="mt-8">
+        <p className="mb-2 text-sm text-indigo-600 font-semibold">
+          <InformationCircleIcon className="w-6 h-6 -mt-1 inline" /> New Cell
+        </p>
+        <pre className="border rounded p-2 mb-6 leading-8 text-gray-600 whitespace-prewrap text-sm overflow-hidden">
+          <code>
+            {JSON.stringify(
+              {
+                lock: wallet.otxAddress(),
+                type: wallet.sudtTypeScript(),
+                data: "0x{Amount}",
+                capacity: 142,
+              },
+              null,
+              2
+            )}
+          </code>
+        </pre>
+      </footer>
     </>
   );
 }

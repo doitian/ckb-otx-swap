@@ -1,7 +1,5 @@
+import * as styles from "../styles";
+
 export default function PageTitle({ children }) {
-  return (
-    <h2 class="text-2xl font-bold leading-7 mb-8 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-      {children}
-    </h2>
-  );
+  return <h2 class={styles.pageTitle}>{children}</h2>;
 }

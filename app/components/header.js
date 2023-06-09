@@ -4,15 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Dialog } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
-function MenuItem({ item, className, isActive }) {
-  const activeClassName = isActive ? " border-b border-indigo-500" : "";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import * as styles from "../styles";
+
+function MenuItem({ item, isActive }) {
   return (
     <Link
       key={item.name}
       href={item.href}
-      className={`font-semibold text-gray-900 ${className} ${activeClassName}`}
+      className={styles.menuItem(isActive)}
     >
       {item.name}
     </Link>
@@ -50,7 +51,6 @@ export default function Header({ title, navigation }) {
               key={item}
               item={item}
               isActive={pathname === item.href}
-              className="text-sm leading-6"
             />
           ))}
         </div>
