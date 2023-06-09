@@ -9,3 +9,11 @@ export function renderDecimal(number, digits) {
 export function renderCkbBalance(number) {
   return renderDecimal(number, 8);
 }
+
+export function renderAssetName(asset) {
+  if (asset.kind === "CKB") {
+    return "CKB";
+  }
+
+  return `${asset.kind} › ${asset.identity}`;
+}

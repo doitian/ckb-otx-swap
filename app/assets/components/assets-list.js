@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { renderCkbBalance } from "../../lib/view-utils";
+import { renderCkbBalance, renderAssetName } from "../../lib/view-utils";
 import AddressText from "../../components/address-text";
 
 export function renderBalance(asset) {
@@ -14,10 +14,16 @@ export function renderBalance(asset) {
 export default function AssetsList({ title, address, explorerUrl, assets }) {
   return (
     <section className="mb-8">
-      <h3 className="font-bold leading-4 text-gray-900 sm:truncate sm:tracking-tight">{title}</h3>
+      <h3 className="font-bold leading-4 text-gray-900 sm:truncate sm:tracking-tight">
+        {title}
+      </h3>
       <aside className="mb-8">
         <p className="flex items-baseline">
-          <AddressText className="grow" address={address} explorerUrl={explorerUrl} />
+          <AddressText
+            className="grow"
+            address={address}
+            explorerUrl={explorerUrl}
+          />
           <a
             href="https://faucet.nervos.org/"
             target="_blank"
@@ -38,9 +44,7 @@ export default function AssetsList({ title, address, explorerUrl, assets }) {
         <tbody>
           {assets.map((asset) => (
             <tr key={`${asset.kind}-${asset.identity}`}>
-              <th className="px-4">
-                {asset.kind} ({asset.identity})
-              </th>
+              <th className="px-4">{renderAssetName(asset)}</th>
               <td className="px-4 text-right">{renderBalance(asset)}</td>
             </tr>
           ))}
