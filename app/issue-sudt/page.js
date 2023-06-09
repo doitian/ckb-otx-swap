@@ -19,8 +19,8 @@ function Claim({ address, balance }) {
       <h3 className="text-xl leading-4 mb-4">Insifficient CKB to Issue SUDT</h3>
 
       <p className="mb-4">
-        Current balance is {renderCkbBalance(balance)}, the minimum required
-        balance is {renderCkbBalance(MIN_OWNER_BALANCE)}
+        Current balance is {renderCkbBalance(balance)},<br />
+        the minimum required balance is {renderCkbBalance(MIN_OWNER_BALANCE)}.
       </p>
 
       <p className="mb-4">Please claim CKB to the address: {address}</p>
@@ -38,28 +38,24 @@ function Claim({ address, balance }) {
 
 function IssueForm() {
   return (
-    <form action={issueSudt}>
-      <div className="mb-4">
-        <label className="mr-4" for="amount">
-          Amount
-        </label>
-        <input
-          id="amount"
-          name="amount"
-          className="rounded"
-          value="10000"
-          type="number"
-        />
-      </div>
+    <form className="flex items-baseline space-x-4" action={issueSudt}>
+      <label className="w-24 text-right" for="amount">
+        Amount
+      </label>
+      <input
+        id="amount"
+        name="amount"
+        className="rounded grow"
+        value="10000"
+        type="number"
+      />
 
-      <div className="mb-4">
-        <button
-          className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          type="submit"
-        >
-          Issue
-        </button>
-      </div>
+      <button
+        className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        type="submit"
+      >
+        Issue
+      </button>
     </form>
   );
 }
@@ -80,7 +76,7 @@ export default async function IssueSudtPage({ config = injectConfig() }) {
       <PageTitle>{metadata.title}</PageTitle>
 
       <p>SUDT Type Script:</p>
-      <pre className="border rounded p-4 my-6 text-lg leading-8 text-gray-600">
+      <pre className="border rounded p-2 mb-6 leading-8 text-gray-600">
         <code>{JSON.stringify(wallet.sudtTypeScript(), null, 2)}</code>
       </pre>
 
