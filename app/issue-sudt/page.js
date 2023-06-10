@@ -55,7 +55,7 @@ function IssueForm() {
         type="number"
       />
 
-      <button className={styles.solidButton.primary} type="submit">
+      <button className={styles.solidButton} type="submit">
         Issue
       </button>
     </form>

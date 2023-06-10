@@ -29,7 +29,7 @@ export default async function AssetsPage({ config = injectConfig() }) {
       />
 
       <p className="text-right">
-        <Link className={styles.outlineButton.primary} href="/issue-sudt">
+        <Link className={styles.outlineButton} href="/issue-sudt">
           Issue SUDT
         </Link>
       </p>

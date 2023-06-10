@@ -26,7 +26,7 @@ export default function AssetsList({ title, address, explorerUrl, assets }) {
           <a
             href="https://faucet.nervos.org/"
             target="_blank"
-            className={styles.outlineButton.primary}
+            className={styles.outlineButton}
           >
             Claim CKB via Faucet
           </a>
@@ -38,6 +38,7 @@ export default function AssetsList({ title, address, explorerUrl, assets }) {
           <tr className="border-b border-slate-200">
             <th className="px-8">Asset</th>
             <th className="px-8">Balance</th>
+            <th>&nbsp;</th>
           </tr>
         </thead>
         <tbody>
@@ -47,6 +48,14 @@ export default function AssetsList({ title, address, explorerUrl, assets }) {
                 <span>{renderAssetName(asset)}</span>
               </th>
               <td className="px-4 text-right">{renderBalance(asset)}</td>
+              <td className="px-4">
+                <Link
+                  href={`/swap/${asset.kind}/${asset.identity}`}
+                  className={styles.linkButton}
+                >
+                  Swap
+                </Link>
+              </td>
             </tr>
           ))}
         </tbody>

@@ -20,7 +20,7 @@ export default function RootLayout({
       <body className="bg-white">
         <Header title={metadata.title} navigation={navigation} />
 
-        <main className="relative isolate px-6 pt-14 lg:px-8">
+        <main className="relative isolate px-6 pt-16 lg:px-8">
           {config.configured ? children : init}
         </main>
       </body>

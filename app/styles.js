@@ -9,23 +9,28 @@ const solidButtonBase = classnames(
   buttonBase,
   "py-3 border border-transparent text-white focus:outline-none focus:ring-2 focus:ring-offset-2"
 );
-export const solidButton = {
-  primary: classnames(
-    solidButtonBase,
-    "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-600 dark:focus:ring-offset-gray-800"
-  ),
-};
+export const solidButton = classnames(
+  solidButtonBase,
+  "bg-indigo-600 hover:bg-indigo-500 focus:ring-indigo-600 dark:focus:ring-offset-gray-800"
+);
 
 const outlineButtonBase = classnames(
   buttonBase,
   "py-[.688rem] border-2 border-gray-200 font-semibold hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all text-sm"
 );
-export const outlineButton = {
-  primary: classnames(
-    outlineButtonBase,
-    "text-indigo-600 hover:text-white hover:bg-indigo-600 hover:border-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 transition-all text-sm dark:border-gray-700 dark:hover:border-indigo-600"
-  ),
-};
+export const outlineButton = classnames(
+  outlineButtonBase,
+  "text-indigo-600 hover:text-white hover:bg-indigo-600 hover:border-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 transition-all text-sm dark:border-gray-700 dark:hover:border-indigo-600"
+);
+
+const linkButtonBase = classnames(
+  buttonBase,
+  "py-3 border border-transparent focus:outline-none focus:ring-2 ring-offset-white focus:ring-offset-2"
+);
+export const linkButton = classnames(
+  linkButtonBase,
+  "text-indigo-600 hover:text-indigo-500 focus:ring-indigo-600"
+);
 
 export const pageTitle = classnames(
   "text-2xl",
