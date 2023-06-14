@@ -68,6 +68,7 @@ export default async function SwapPage({
               type={toKind === "CKB" ? "hidden" : "text"}
               className={classnames(styles.input, "block", "w-full")}
               placeholder={toKind === "CKB" ? "CKB" : "0x..."}
+              value={toKind === "CKB" ? "CKB" : ""}
               required
             />
             <input
