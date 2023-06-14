@@ -22,7 +22,7 @@ const CKB_ENVS = {
       ...lumosConfig.predefined.AGGRON4.SCRIPTS,
       OTXLOCK: {
         CODE_HASH:
-          "0xd369597ff47f29fbc0d47d2e3775370d1250b85140c670e4718af712983a2354",
+          "0x96f5f7c1731ad93acf4d84275e363941180b6417b1fc6dbcbcd6dd034f4b232f",
         HASH_TYPE: "type",
         TX_HASH:
           "0xb136eb95b34898caa716f4dd6815801971dea60167c268b947a636adb4f90028",
