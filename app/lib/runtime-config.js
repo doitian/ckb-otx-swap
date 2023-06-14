@@ -1,5 +1,6 @@
 import { Indexer, RPC, config as lumosConfig } from "@ckb-lumos/lumos";
 
+import OtxPoolRpc from "./otx-pool-rpc";
 import Wallet from "./wallet";
 
 export const ENV_CKB_CHAIN = "CKB_CHAIN";
@@ -71,6 +72,10 @@ export default class RuntimeConfig {
 
   getOtxPoolRpcUrl() {
     return this.env[ENV_OTX_POOL_RPC_URL];
+  }
+
+  buildOtxPoolRpcClient() {
+    return new OtxPoolRpc(this.getOtxPoolRpcUrl());
   }
 }
 
