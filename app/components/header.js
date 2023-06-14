@@ -50,7 +50,7 @@ export default function Header({ title, navigation }) {
             <MenuItem
               key={item}
               item={item}
-              isActive={pathname === item.href}
+              isActive={pathname.startsWith(item.href)}
             />
           ))}
         </div>
