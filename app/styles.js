@@ -54,3 +54,11 @@ export const menuItem = (isActive) =>
         "dark:text-gray-400",
         "dark:hover:text-gray-500"
       );
+
+export const input = classnames(
+  "py-3 px-4 block border-gray-200 rounded-md text-sm focus:border-indigo-600 focus:ring-indigo-600 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+);
+export const disabledInput = classnames(
+  input,
+  "opacity-70 pointer-events-none bg-gray-50"
+);

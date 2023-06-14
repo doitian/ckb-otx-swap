@@ -44,15 +44,19 @@ function Claim({ address, explorerUrl, balance }) {
 function IssueForm() {
   return (
     <form className="flex items-baseline space-x-4" action={issueSudt}>
-      <label className="w-24 text-right" for="amount">
+      <label
+        className="w-24 text-right text-sm font-medium dark:text-white"
+        for="amount"
+      >
         Amount
       </label>
       <input
         id="amount"
         name="amount"
-        className="rounded grow"
+        className={styles.input}
         value="10000"
         type="number"
+        required
       />
 
       <button className={styles.solidButton} type="submit">

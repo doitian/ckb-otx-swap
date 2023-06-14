@@ -17,3 +17,11 @@ export function renderAssetName(asset) {
 
   return `${asset.kind} › ${asset.identity}`;
 }
+
+export function renderAssetBalance(asset) {
+  if (asset.kind === "CKB") {
+    return renderCkbBalance(asset.balance);
+  }
+
+  return `${asset.balance}`;
+}

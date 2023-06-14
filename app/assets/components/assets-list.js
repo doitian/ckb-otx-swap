@@ -1,16 +1,8 @@
 import Link from "next/link";
 
 import * as styles from "../../styles";
-import { renderCkbBalance, renderAssetName } from "../../lib/view-utils";
+import { renderAssetName, renderAssetBalance } from "../../lib/view-utils";
 import AddressText from "../../components/address-text";
-
-export function renderBalance(asset) {
-  if (asset.kind === "CKB") {
-    return renderCkbBalance(asset.balance);
-  }
-
-  return `${asset.balance}`;
-}
 
 export default function AssetsList({ title, address, explorerUrl, assets }) {
   return (
@@ -47,14 +39,22 @@ export default function AssetsList({ title, address, explorerUrl, assets }) {
               <th className="px-4 truncate" title={asset.identity}>
                 <span>{renderAssetName(asset)}</span>
               </th>
-              <td className="px-4 text-right">{renderBalance(asset)}</td>
+              <td className="px-4 text-right">{renderAssetBalance(asset)}</td>
               <td className="px-4">
                 <Link
-                  href={`/swap/${asset.kind}/${asset.identity}`}
+                  href={`/swap/${asset.kind}/${asset.identity}/SUDT`}
                   className={styles.linkButton}
                 >
-                  Swap
+                  Swap SUDT
                 </Link>
+                {asset.kind !== "CKB" ? (
+                  <Link
+                    href={`/swap/${asset.kind}/${asset.identity}/CKB`}
+                    className={styles.linkButton}
+                  >
+                    Swap CKB
+                  </Link>
+                ) : null}
               </td>
             </tr>
           ))}
