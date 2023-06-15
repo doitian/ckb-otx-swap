@@ -95,7 +95,8 @@ export default async function IssueSudtPage({ config = injectConfig() }) {
 
       <footer className="mt-8">
         <p className="mb-2 text-sm text-indigo-600 font-semibold">
-          <InformationCircleIcon className="w-6 h-6 -mt-1 inline" /> New Cell
+          <InformationCircleIcon className="w-6 h-6 -mt-1 inline" /> This will
+          create a cell as following:
         </p>
         <pre className="border rounded p-2 mb-6 leading-8 text-gray-600 whitespace-prewrap text-sm overflow-hidden">
           <code>

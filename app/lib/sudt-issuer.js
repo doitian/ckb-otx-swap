@@ -1,6 +1,9 @@
-import { helpers } from "@ckb-lumos/lumos";
-import { sudt } from "@ckb-lumos/common-scripts";
-import { payFeeByFeeRate } from "@ckb-lumos/common-scripts/lib/common";
+import { helpers, commons } from "@ckb-lumos/lumos";
+
+const {
+  sudt,
+  common: { payFeeByFeeRate },
+} = commons;
 
 export default class SudtIssuer {
   constructor(wallet, ckbRpcClient, ckbIndexer, ckbChainConfig) {

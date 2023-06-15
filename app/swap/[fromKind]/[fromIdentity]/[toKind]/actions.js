@@ -29,7 +29,10 @@ function decodeSwapRequest(data) {
 
 export async function swapAssets(data) {
   const swapRequest = decodeSwapRequest(data);
-  console.log(swapRequest);
+  const cell = await createCellFormSwapRequest(swapRequest.from);
+  const otx = await buildSwapProposal(cell, swapRequest.to);
+  wallet.signOtx(otx, 0);
+  await otxPoolRpc.submitOtx(otx);
 
   redirect("/swap");
 }
