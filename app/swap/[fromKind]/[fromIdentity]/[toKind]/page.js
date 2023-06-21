@@ -17,8 +17,8 @@ export default async function SwapPage({
   const wallet = config.getWallet();
   const ckbIndexer = config.buildCkbIndexer();
   const indexer = new AssetsIndexer(ckbIndexer, config.ckbChainConfig);
-  const otxAssets = await indexer.listAssets(wallet.otxLockScript());
-  const fromAsset = otxAssets.find(
+  const assets = await indexer.listAssets(wallet.secp256k1LockScript());
+  const fromAsset = assets.find(
     (a) => a.kind === fromKind && a.identity === fromIdentity
   ) ?? {
     kind: fromKind,
@@ -38,11 +38,11 @@ export default async function SwapPage({
             <legend className="block text-sm font-medium mb-2 dark:text-white">
               <label for="from-amount">From {fromKind}</label>
             </legend>
-            <input type="hidden" name="fromKind" value={fromKind} />
+            <input type="hidden" name="fromKind" defaultValue={fromKind} />
             <input
               name="fromIdentity"
               type={fromKind === "CKB" ? "hidden" : "text"}
-              value={fromIdentity}
+              defaultValue={fromIdentity}
               className={classnames(styles.disabledInput, "block", "w-full")}
               readonly
             />
@@ -62,13 +62,13 @@ export default async function SwapPage({
             <legend className="block text-sm font-medium mb-2 dark:text-white">
               <label for="to-amount">To {toKind}</label>
             </legend>
-            <input type="hidden" name="toKind" value={toKind} />
+            <input type="hidden" name="toKind" defaultValue={toKind} />
             <input
               name="toIdentity"
               type={toKind === "CKB" ? "hidden" : "text"}
               className={classnames(styles.input, "block", "w-full")}
               placeholder={toKind === "CKB" ? "CKB" : "0x..."}
-              value={toKind === "CKB" ? "CKB" : ""}
+              defaultValue={toKind === "CKB" ? "CKB" : ""}
               required
             />
             <input

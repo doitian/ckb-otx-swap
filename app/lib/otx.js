@@ -1,6 +1,10 @@
 import { blockchain } from "@ckb-lumos/base";
 import { bytes, number } from "@ckb-lumos/codec";
 
+function makeKey(key_type, key_data) {
+  return { key_type, key_data: key_data !== undefined ? key_data : null };
+}
+
 class OtxMap extends Map {}
 
 class OtxMeta extends OtxMap {
@@ -14,55 +18,49 @@ class OtxMeta extends OtxMap {
   constructor() {
     super(...arguments);
     this.set(
-      {
-        key_type: OtxMeta.OTX_VERSIONING_META_OPEN_TX_VERSION,
-        key_data: null,
-      },
+      makeKey(OtxMeta.OTX_VERSIONING_META_OPEN_TX_VERSION),
       bytes.hexify(number.Uint32LE.pack(1))
     );
   }
 
   setAccountingInputCkb(amount) {
-    const key = {
-      key_type: OtxMeta.OTX_ACCOUNTING_META_INPUT_CKB,
-      key_data: null,
-    };
-    this.set(key, bytes.hexify(number.Uint64LE.pack(amount)));
+    this.set(
+      makeKey(OtxMeta.OTX_ACCOUNTING_META_INPUT_CKB),
+      bytes.hexify(number.Uint64LE.pack(amount))
+    );
     return this;
   }
 
   setAccountingOutputCkb(amount) {
-    const key = {
-      key_type: OtxMeta.OTX_ACCOUNTING_META_OUTPUT_CKB,
-      key_data: null,
-    };
-    this.set(key, bytes.hexify(number.Uint64LE.pack(amount)));
+    this.set(
+      makeKey(OtxMeta.OTX_ACCOUNTING_META_OUTPUT_CKB),
+      bytes.hexify(number.Uint64LE.pack(amount))
+    );
     return this;
   }
 
   setAccountingMaxFee(amount) {
-    const key = {
-      key_type: OtxMeta.OTX_ACCOUNTING_META_MAX_FEE,
-      key_data: null,
-    };
-    this.set(key, bytes.hexify(number.Uint64LE.pack(amount)));
+    this.set(
+      makeKey(OtxMeta.OTX_ACCOUNTING_META_MAX_FEE),
+      bytes.hexify(number.Uint64LE.pack(amount))
+    );
     return this;
   }
 
   setAccountingInputSudt(sudtTypeScript, amount) {
-    const key = {
-      key_type: OtxMeta.OTX_ACCOUNTING_META_MAX_FEE,
-      key_data: bytes.hexify(blockchain.Script.pack(sudtTypeScript)),
-    };
+    const key = makeKey(
+      OtxMeta.OTX_ACCOUNTING_META_MAX_FEE,
+      bytes.hexify(blockchain.Script.pack(sudtTypeScript))
+    );
     this.set(key, bytes.hexify(number.Uint128LE.pack(amount)));
     return this;
   }
 
   setAccountingOutputSudt(sudtTypeScript, amount) {
-    const key = {
-      key_type: OtxMeta.OTX_ACCOUNTING_META_MAX_FEE,
-      key_data: bytes.hexify(blockchain.Script.pack(sudtTypeScript)),
-    };
+    const key = makeKey(
+      OtxMeta.OTX_ACCOUNTING_META_MAX_FEE,
+      bytes.hexify(blockchain.Script.pack(sudtTypeScript))
+    );
     this.set(key, bytes.hexify(number.Uint128LE.pack(amount)));
     return this;
   }
@@ -75,15 +73,15 @@ class OtxCellDep extends OtxMap {
 
   setFromCkbCellDep(cellDep) {
     this.set(
-      { key_type: OtxCellDep.OTX_CELL_DEP_OUTPOINT_TX_HASH, key_data: null },
+      makeKey(OtxCellDep.OTX_CELL_DEP_OUTPOINT_TX_HASH),
       cellDep.outPoint.txHash
     );
     this.set(
-      { key_type: OtxCellDep.OTX_CELL_DEP_OUTPOINT_INDEX, key_data: null },
+      makeKey(OtxCellDep.OTX_CELL_DEP_OUTPOINT_INDEX),
       bytes.hexify(number.Uint32LE.pack(cellDep.outPoint.index))
     );
     this.set(
-      { key_type: OtxCellDep.OTX_CELL_DEP_TYPE, key_data: null },
+      makeKey(OtxCellDep.OTX_CELL_DEP_TYPE),
       bytes.hexify(blockchain.DepType.pack(cellDep.depType))
     );
     return this;
@@ -99,18 +97,32 @@ class OtxInput extends OtxMap {
 
   setFromCkbInput(input) {
     this.set(
-      { key_type: OtxInput.OTX_INPUT_OUTPOINT_TX_HASH, key_data: null },
+      makeKey(OtxInput.OTX_INPUT_OUTPOINT_TX_HASH),
       input.previousOutput.txHash
     );
     this.set(
-      { key_type: OtxInput.OTX_INPUT_OUTPOINT_INDEX, key_data: null },
+      makeKey(OtxInput.OTX_INPUT_OUTPOINT_INDEX),
       bytes.hexify(number.Uint32LE.pack(input.previousOutput.index))
     );
     this.set(
-      { key_type: OtxInput.OTX_INPUT_SINCE, key_data: null },
+      makeKey(OtxInput.OTX_INPUT_SINCE),
       bytes.hexify(number.Uint64LE.pack(input.since))
     );
     return this;
+  }
+
+  toMolecule() {
+    return blockchain.Input.pack({
+      previousOutput: {
+        txHash: this.get(makeKey(OtxInput.OTX_INPUT_OUTPOINT_TX_HASH)),
+        index: number.Uint32LE.unpack(
+          this.get(makeKey(OtxInput.OTX_INPUT_OUTPOINT_INDEX))
+        ).toHexString(),
+      },
+      since: number.Uint64LE.unpack(
+        this.get(makeKey(OtxInput.OTX_INPUT_SINCE))
+      ).toHexString(),
+    });
   }
 }
 
@@ -119,15 +131,15 @@ class OtxWitness extends OtxMap {
 
   setFromWitnessArgs(witnessArgs) {
     this.set(
-      { key_type: OtxWitness.OTX_WITNESS_ARGS, key_data: "0x00" },
+      makeKey(OtxWitness.OTX_WITNESS_ARGS, "0x00"),
       bytes.hexify(blockchain.BytesOpt.pack(witnessArgs.lock))
     );
     this.set(
-      { key_type: OtxWitness.OTX_WITNESS_ARGS, key_data: "0x01" },
+      makeKey(OtxWitness.OTX_WITNESS_ARGS, "0x01"),
       bytes.hexify(blockchain.BytesOpt.pack(witnessArgs.inputType))
     );
     this.set(
-      { key_type: OtxWitness.OTX_WITNESS_ARGS, key_data: "0x02" },
+      makeKey(OtxWitness.OTX_WITNESS_ARGS, "0x02"),
       bytes.hexify(blockchain.BytesOpt.pack(witnessArgs.outputType))
     );
     return this;
@@ -146,32 +158,32 @@ class OtxOutput extends OtxMap {
 
   setFromCkbOutput(output) {
     this.set(
-      { key_type: OtxOutput.OTX_OUTPUT_CAPACITY, key_data: null },
+      makeKey(OtxOutput.OTX_OUTPUT_CAPACITY),
       bytes.hexify(number.Uint64LE.pack(output.capacity))
     );
     this.set(
-      { key_type: OtxOutput.OTX_OUTPUT_LOCK_CODE_HASH, key_data: null },
+      makeKey(OtxOutput.OTX_OUTPUT_LOCK_CODE_HASH),
       output.lock.codeHash
     );
     this.set(
-      { key_type: OtxOutput.OTX_OUTPUT_LOCK_HASH_TYPE, key_data: null },
+      makeKey(OtxOutput.OTX_OUTPUT_LOCK_HASH_TYPE),
       bytes.hexify(blockchain.HashType.pack(output.lock.hashType))
     );
     this.set(
-      { key_type: OtxOutput.OTX_OUTPUT_LOCK_ARGS, key_data: null },
+      makeKey(OtxOutput.OTX_OUTPUT_LOCK_ARGS),
       bytes.hexify(blockchain.Bytes.pack(output.lock.args))
     );
     if (output.type !== null && output.type !== undefined) {
       this.set(
-        { key_type: OtxOutput.OTX_OUTPUT_TYPE_CODE_HASH, key_data: null },
+        makeKey(OtxOutput.OTX_OUTPUT_TYPE_CODE_HASH),
         output.type.codeHash
       );
       this.set(
-        { key_type: OtxOutput.OTX_OUTPUT_TYPE_HASH_TYPE, key_data: null },
+        makeKey(OtxOutput.OTX_OUTPUT_TYPE_HASH_TYPE),
         bytes.hexify(blockchain.HashType.pack(output.type.hashType))
       );
       this.set(
-        { key_type: OtxOutput.OTX_OUTPUT_TYPE_ARGS, key_data: null },
+        makeKey(OtxOutput.OTX_OUTPUT_TYPE_ARGS),
         bytes.hexify(blockchain.Bytes.pack(output.type.args))
       );
     }
@@ -180,10 +192,49 @@ class OtxOutput extends OtxMap {
 
   setData(data) {
     this.set(
-      { key_type: OtxOutput.OTX_OUTPUT_DATA, key_data: null },
+      makeKey(OtxOutput.OTX_OUTPUT_DATA),
       bytes.hexify(blockchain.Bytes.pack(data))
     );
     return this;
+  }
+
+  getData(data) {
+    return blockchain.Bytes.unpack(
+      this.get(makeKey(OtxOutput.OTX_OUTPUT_DATA))
+    );
+  }
+
+  toMolecule() {
+    const lock = {
+      codeHash: this.get(makeKey(OtxOutput.OTX_OUTPUT_LOCK_CODE_HASH)),
+      hashType: blockchain.HashType.unpack(
+        this.get(makeKey(OtxOutput.OTX_OUTPUT_LOCK_HASH_TYPE))
+      ),
+      args: blockchain.Bytes.unpack(
+        this.get(makeKey(OtxOutput.OTX_OUTPUT_LOCK_ARGS))
+      ),
+    };
+
+    const typeCodeHashKey = makeKey(OtxOutput.OTX_OUTPUT_TYPE_CODE_HASH);
+    const type = this.has(typeCodeHashKey)
+      ? {
+          codeHash: this.get(typeCodeHashKey),
+          hashType: blockchain.HashType.unpack(
+            this.get(makeKey(OtxOutput.OTX_OUTPUT_TYPE_HASH_TYPE))
+          ),
+          args: blockchain.Bytes.unpack(
+            this.get(makeKey(OtxOutput.OTX_OUTPUT_TYPE_ARGS))
+          ),
+        }
+      : null;
+
+    return blockchain.Output.pack({
+      capacity: number.Uint64LE.unpack(
+        this.get(makeKey(OtxOutput.OTX_OUTPUT_CAPACITY))
+      ).toHexString(),
+      lock,
+      type,
+    });
   }
 }
 

@@ -46,4 +46,8 @@ export default class OtxPoolRpc {
   async getAllSwapProposals() {
     return await this.call("get_all_swap_proposals");
   }
+
+  async submitOtx(otx) {
+    return await this.call("submit_otx", [otx]);
+  }
 }

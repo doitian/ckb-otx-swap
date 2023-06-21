@@ -16,16 +16,16 @@ export default async function AssetsPage({ config = injectConfig() }) {
   const ckbIndexer = config.buildCkbIndexer();
   const indexer = new AssetsIndexer(ckbIndexer, config.ckbChainConfig);
 
-  const otxAssets = await indexer.listAssets(wallet.otxLockScript());
+  const assets = await indexer.listAssets(wallet.secp256k1LockScript());
 
   return (
     <>
       <PageTitle>{metadata.title}</PageTitle>
       <AssetsList
-        title="OTX Account"
-        address={wallet.otxAddress()}
+        title="Secp256k1 Account"
+        address={wallet.secp256k1Address()}
         explorerUrl={config.ckbChainConfig.EXPLORER_URL}
-        assets={otxAssets}
+        assets={assets}
       />
 
       <p className="text-right">

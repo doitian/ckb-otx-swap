@@ -5,8 +5,7 @@ import { redirect } from "next/navigation";
 import { injectConfig } from "../lib/runtime-config";
 import SudtIssuer from "../lib/sudt-issuer";
 
-export async function issueSudt(data) {
-  const config = injectConfig();
+export async function issueSudt(data, config = injectConfig()) {
   const wallet = config.getWallet();
   const ckbIndexer = config.buildCkbIndexer();
   const ckbRpcClient = config.buildCkbRpcClient();

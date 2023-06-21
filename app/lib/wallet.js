@@ -58,14 +58,20 @@ export default class Wallet {
     return this.pkhScriptByScriptName("OTXLOCK");
   }
 
-  sudtTypeScript() {
+  sudtTypeScriptOf(args) {
     const script = this.ckbChainConfig.SCRIPTS["SUDT"];
 
     return {
       codeHash: script.CODE_HASH,
       hashType: script.HASH_TYPE,
-      args: utils.computeScriptHash(this.secp256k1LockScript()),
+      args,
     };
+  }
+
+  sudtTypeScript() {
+    return this.sudtTypeScriptOf(
+      utils.computeScriptHash(this.secp256k1LockScript())
+    );
   }
 
   otxAddress() {

@@ -15,7 +15,6 @@ export default class SudtIssuer {
 
   async issue(amount) {
     const ownerAddress = this.wallet.secp256k1Address();
-    const otxLockScript = this.wallet.otxLockScript();
 
     let txSkeleton = helpers.TransactionSkeleton({
       cellProvider: this.ckbIndexer,
@@ -30,19 +29,6 @@ export default class SudtIssuer {
         config: this.ckbChainConfig,
       }
     );
-
-    // modify the target output to use OTX Lock
-    txSkeleton = txSkeleton.update("outputs", (outputs) => {
-      return outputs.update(0, (cell) => {
-        return {
-          ...cell,
-          cellOutput: {
-            ...cell.cellOutput,
-            lock: otxLockScript,
-          },
-        };
-      });
-    });
 
     txSkeleton = await payFeeByFeeRate(
       txSkeleton,

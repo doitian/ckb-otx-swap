@@ -102,7 +102,7 @@ export default async function IssueSudtPage({ config = injectConfig() }) {
           <code>
             {JSON.stringify(
               {
-                lock: wallet.otxAddress(),
+                lock: ownerAddress,
                 type: wallet.sudtTypeScript(),
                 data: "0x{Amount}",
                 capacity: 142,
