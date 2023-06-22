@@ -1,34 +1,43 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a demo to swap CKB and [SUDT](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0025-simple-udt/0025-simple-udt.md) automatically using [Open Transaction (OTX)](https://github.com/doitian/rfcs/blob/rfc-open-transaction/rfcs/0046-open-transaction/0046-open-transaction.md).
 
 ## Getting Started
 
-First, run the development server:
+1. Download [open-transaction-pool](https://github.com/EthanYuan/open-transaction-pool) and build the executable.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+    ```bash
+    git clone https://github.com/EthanYuan/open-transaction-pool.git ../open-transaction-pool/
+    pushd ../open-transaction-pool/
+    cargo build --release
+    popd
+    ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Use the config file `open-transaction-pool.toml` in this repository to start open-transaction-pool.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+    ```bash
+    ../open-transaction-pool/target/release/open-transaction-pool -c open-transaction-pool.toml
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+3. Generate development key pairs for the web server.
 
-## Learn More
+    ```
+    npm run init
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+4. Run the development server.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    # or
+    pnpm dev
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the demo.
 
-## Deploy on Vercel
+## Steps to Send a Swap Proposal
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- First go to the assets page http://localhost:3000/assets
+- Claim CKB via Faucet
+- Issue SUDT when there are some CKBs in the account.
+- Use the buttons in the assets list to initiate the swap proposal.
