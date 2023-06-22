@@ -29,6 +29,9 @@ export default class Wallet {
         );
       return helpers.sealTransaction(txForSigning, signatures.toJSON());
     };
+
+    this.signRecoverable = (message) =>
+      hd.key.signRecoverable(message, `0x${keypair.getPrivate("hex")}`);
   }
 
   // Return a script that uses the wallet pubkey hash as args

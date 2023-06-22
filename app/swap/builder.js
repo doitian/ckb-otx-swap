@@ -20,7 +20,10 @@ export async function buildSwapProposal(
 
   // input
   const from = {
-    previousOutput: locking.hash,
+    previousOutput: {
+      txHash: locking.hash,
+      index: "0x1",
+    },
     since: "0x0",
   };
   otx.pushNewInput().setFromCkbInput(from);
@@ -95,8 +98,8 @@ export function singleAnyoneCanPayDigest(otx, index) {
   const witnessBuf = blockchain.WitnessArgs.pack(witness);
 
   // hash
-  const hasher = new utils.Hasher();
-  hasher.update(number.Uint64LE.pack(inputBuf.lenth));
+  const hasher = new utils.CKBHasher();
+  hasher.update(number.Uint64LE.pack(inputBuf.length));
   hasher.update(inputBuf);
   hasher.update(number.Uint64LE.pack(outputBuf.length));
   hasher.update(outputBuf);
@@ -109,14 +112,14 @@ export function singleAnyoneCanPayDigest(otx, index) {
   return digestWithOtxPrefix("0x83", message);
 }
 
-digestWithOtxPrefix(sighash, messageBuf) {
-    const hasher = new utils.Hasher();
-    hasher.update(bytes.bytifyRawString("COTX "));
-    hasher.update(bytes.bytify(sighash));
-    hasher.update(bytes.bytifyRawString(":\n"));
-    hasher.update(bytes.bitifyRawString(messageBuf.length.toString()));
-    hasher.update(messageBuf);
-    return hasher.digestHex();
+function digestWithOtxPrefix(sighash, messageBuf) {
+  const hasher = new utils.CKBHasher();
+  hasher.update(bytes.bytifyRawString("COTX "));
+  hasher.update(bytes.bytify(sighash));
+  hasher.update(bytes.bytifyRawString(":\n"));
+  hasher.update(bytes.bytifyRawString(messageBuf.length.toString()));
+  hasher.update(messageBuf);
+  return hasher.digestHex();
 }
 
 export function signSingleAnyoneCanPay(wallet, otx, index) {

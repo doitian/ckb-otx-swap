@@ -1,13 +1,31 @@
 import { blockchain } from "@ckb-lumos/base";
 import { bytes, number } from "@ckb-lumos/codec";
 
-function makeKey(key_type, key_data) {
-  return { key_type, key_data: key_data !== undefined ? key_data : null };
+export function makeKey(keyType, keyData) {
+  return `${bytes.hexify(number.Uint32LE.pack(keyType))}${
+    keyData !== null && keyData !== undefined ? keyData : ""
+  }`;
+}
+
+export function fromJsonKeyPair([key, value]) {
+  return [makeKey(key), value];
+}
+
+export function toJsonKeyPair([key, value]) {
+  const keyTypeBuf = key.substring(0, 10);
+  const keyData = key.substring(10);
+  return [
+    {
+      key_type: `0x${number.Uint32LE.unpack(keyTypeBuf).toString(16)}`,
+      key_data: keyData !== "" ? keyData : null,
+    },
+    value,
+  ];
 }
 
 class OtxMap extends Map {}
 
-class OtxMeta extends OtxMap {
+export class OtxMeta extends OtxMap {
   static OTX_VERSIONING_META_OPEN_TX_VERSION = "0x10000";
   static OTX_ACCOUNTING_META_INPUT_CKB = "0x10040";
   static OTX_ACCOUNTING_META_OUTPUT_CKB = "0x10041";
@@ -49,7 +67,7 @@ class OtxMeta extends OtxMap {
 
   setAccountingInputSudt(sudtTypeScript, amount) {
     const key = makeKey(
-      OtxMeta.OTX_ACCOUNTING_META_MAX_FEE,
+      OtxMeta.OTX_ACCOUNTING_META_INPUT_SUDT,
       bytes.hexify(blockchain.Script.pack(sudtTypeScript))
     );
     this.set(key, bytes.hexify(number.Uint128LE.pack(amount)));
@@ -58,7 +76,7 @@ class OtxMeta extends OtxMap {
 
   setAccountingOutputSudt(sudtTypeScript, amount) {
     const key = makeKey(
-      OtxMeta.OTX_ACCOUNTING_META_MAX_FEE,
+      OtxMeta.OTX_ACCOUNTING_META_OUTPUT_SUDT,
       bytes.hexify(blockchain.Script.pack(sudtTypeScript))
     );
     this.set(key, bytes.hexify(number.Uint128LE.pack(amount)));
@@ -66,7 +84,7 @@ class OtxMeta extends OtxMap {
   }
 }
 
-class OtxCellDep extends OtxMap {
+export class OtxCellDep extends OtxMap {
   static OTX_CELL_DEP_OUTPOINT_TX_HASH = "0x02";
   static OTX_CELL_DEP_OUTPOINT_INDEX = "0x03";
   static OTX_CELL_DEP_TYPE = "0x04";
@@ -88,9 +106,9 @@ class OtxCellDep extends OtxMap {
   }
 }
 
-class OtxHeaderDep extends OtxMap {}
+export class OtxHeaderDep extends OtxMap {}
 
-class OtxInput extends OtxMap {
+export class OtxInput extends OtxMap {
   static OTX_INPUT_OUTPOINT_TX_HASH = "0x06";
   static OTX_INPUT_OUTPOINT_INDEX = "0x07";
   static OTX_INPUT_SINCE = "0x08";
@@ -112,12 +130,12 @@ class OtxInput extends OtxMap {
   }
 
   toMolecule() {
-    return blockchain.Input.pack({
+    return blockchain.CellInput.pack({
       previousOutput: {
         txHash: this.get(makeKey(OtxInput.OTX_INPUT_OUTPOINT_TX_HASH)),
-        index: number.Uint32LE.unpack(
+        index: `0x${number.Uint32LE.unpack(
           this.get(makeKey(OtxInput.OTX_INPUT_OUTPOINT_INDEX))
-        ).toHexString(),
+        ).toString(16)}`,
       },
       since: number.Uint64LE.unpack(
         this.get(makeKey(OtxInput.OTX_INPUT_SINCE))
@@ -126,35 +144,37 @@ class OtxInput extends OtxMap {
   }
 }
 
-class OtxWitness extends OtxMap {
-  static OTX_WITNESS_ARGS = "0x0a";
+export class OtxWitness extends OtxMap {
+  static OTX_WITNESS_INPUT_LOCK = "0x0a";
+  static OTX_WITNESS_INPUT_TYPE = "0x0b";
+  static OTX_WITNESS_OUTPUT_TYPE = "0x0c";
 
   setFromWitnessArgs(witnessArgs) {
     this.set(
-      makeKey(OtxWitness.OTX_WITNESS_ARGS, "0x00"),
+      makeKey(OtxWitness.OTX_WITNESS_INPUT_LOCK),
       bytes.hexify(blockchain.BytesOpt.pack(witnessArgs.lock))
     );
     this.set(
-      makeKey(OtxWitness.OTX_WITNESS_ARGS, "0x01"),
+      makeKey(OtxWitness.OTX_WITNESS_INPUT_TYPE),
       bytes.hexify(blockchain.BytesOpt.pack(witnessArgs.inputType))
     );
     this.set(
-      makeKey(OtxWitness.OTX_WITNESS_ARGS, "0x02"),
+      makeKey(OtxWitness.OTX_WITNESS_OUTPUT_TYPE),
       bytes.hexify(blockchain.BytesOpt.pack(witnessArgs.outputType))
     );
     return this;
   }
 }
 
-class OtxOutput extends OtxMap {
-  static OTX_OUTPUT_CAPACITY = "0x0b";
-  static OTX_OUTPUT_LOCK_CODE_HASH = "0x0c";
-  static OTX_OUTPUT_LOCK_HASH_TYPE = "0x0d";
-  static OTX_OUTPUT_LOCK_ARGS = "0x0e";
-  static OTX_OUTPUT_TYPE_CODE_HASH = "0x0f";
-  static OTX_OUTPUT_TYPE_HASH_TYPE = "0x10";
-  static OTX_OUTPUT_TYPE_ARGS = "0x11";
-  static OTX_OUTPUT_DATA = "0x12";
+export class OtxOutput extends OtxMap {
+  static OTX_OUTPUT_CAPACITY = "0x0d";
+  static OTX_OUTPUT_LOCK_CODE_HASH = "0x0e";
+  static OTX_OUTPUT_LOCK_HASH_TYPE = "0x0f";
+  static OTX_OUTPUT_LOCK_ARGS = "0x10";
+  static OTX_OUTPUT_TYPE_CODE_HASH = "0x12";
+  static OTX_OUTPUT_TYPE_HASH_TYPE = "0x13";
+  static OTX_OUTPUT_TYPE_ARGS = "0x14";
+  static OTX_OUTPUT_DATA = "0x15";
 
   setFromCkbOutput(output) {
     this.set(
@@ -228,7 +248,7 @@ class OtxOutput extends OtxMap {
         }
       : null;
 
-    return blockchain.Output.pack({
+    return blockchain.CellOutput.pack({
       capacity: number.Uint64LE.unpack(
         this.get(makeKey(OtxOutput.OTX_OUTPUT_CAPACITY))
       ).toHexString(),
@@ -250,22 +270,42 @@ export class OpenTransaction {
 
   static fromJson(json) {
     const tx = new OpenTransaction();
-    tx.meta = new OtxMeta(json.meta);
-    tx.cellDeps = json.cell_deps.map((item) => new OtxCellDep(item));
-    tx.headerDeps = json.header_deps.map((item) => new OtxHeaderDep(item));
-    tx.inputs = json.inputs.map((item) => new OtxInput(item));
-    tx.witnesses = json.witnesses.map((item) => new OtxWitness(item));
-    tx.outputs = json.outputs.map((item) => new OtxOutput(item));
+    tx.meta = new OtxMeta(json.meta.map(fromJsonKeyPair));
+    tx.cellDeps = json.cell_deps.map(
+      (item) => new OtxCellDep(item.map(fromJsonKeyPair))
+    );
+    tx.headerDeps = json.header_deps.map(
+      (item) => new OtxHeaderDep(item.map(fromJsonKeyPair))
+    );
+    tx.inputs = json.inputs.map(
+      (item) => new OtxInput(item.map(fromJsonKeyPair))
+    );
+    tx.witnesses = json.witnesses.map(
+      (item) => new OtxWitness(item.map(fromJsonKeyPair))
+    );
+    tx.outputs = json.outputs.map(
+      (item) => new OtxOutput(item.map(fromJsonKeyPair))
+    );
   }
 
   toJson() {
     return {
-      meta: Array.from(this.meta.entries()),
-      cell_deps: this.cellDeps.map((item) => Array.from(item.entries())),
-      header_deps: this.headerDeps.map((item) => Array.from(item.entries())),
-      inputs: this.inputs.map((item) => Array.from(item.entries())),
-      witnesses: this.witnesses.map((item) => Array.from(item.entries())),
-      outputs: this.outputs.map((item) => Array.from(item.entries())),
+      meta: Array.from(this.meta.entries()).map(toJsonKeyPair),
+      cell_deps: this.cellDeps.map((item) =>
+        Array.from(item.entries()).map(toJsonKeyPair)
+      ),
+      header_deps: this.headerDeps.map((item) =>
+        Array.from(item.entries()).map(toJsonKeyPair)
+      ),
+      inputs: this.inputs.map((item) =>
+        Array.from(item.entries()).map(toJsonKeyPair)
+      ),
+      witnesses: this.witnesses.map((item) =>
+        Array.from(item.entries()).map(toJsonKeyPair)
+      ),
+      outputs: this.outputs.map((item) =>
+        Array.from(item.entries()).map(toJsonKeyPair)
+      ),
     };
   }
 
@@ -289,13 +329,13 @@ export class OpenTransaction {
 
   pushNewWitness() {
     const entity = new OtxWitness();
-    this.cellDeps.push(entity);
+    this.witnesses.push(entity);
     return entity;
   }
 
   pushNewOutput() {
     const entity = new OtxOutput();
-    this.cellDeps.push(entity);
+    this.outputs.push(entity);
     return entity;
   }
 }

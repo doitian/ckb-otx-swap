@@ -32,6 +32,7 @@ export default class OtxPoolRpc {
       bodyPayload.params = params;
     }
     const body = JSON.stringify(bodyPayload);
+    // console.log(`${this.endpoint} ${body}`);
     const response = await fetch(this.endpoint, {
       method: "POST",
       headers: {
@@ -48,6 +49,6 @@ export default class OtxPoolRpc {
   }
 
   async submitOtx(otx) {
-    return await this.call("submit_otx", [otx]);
+    return await this.call("submit_otx", [otx.toJson()]);
   }
 }

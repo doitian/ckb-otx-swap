@@ -109,10 +109,7 @@ async function prepareCkbSwapTxSkeleton(
   config,
   minCapacity
 ) {
-  let capacity = from.balance.add(SWAP_FEE);
-  if (capacity.lt(minCapacity)) {
-    capacity = minCapacity;
-  }
+  let capacity = from.balance.add(minCapacity);
   const secp256k1Address = wallet.secp256k1Address();
 
   txSkeleton = await transfer(
@@ -198,7 +195,7 @@ export async function swapAssets(data, config = injectConfig()) {
   );
 
   signSingleAnyoneCanPay(wallet, otx, 0);
-  await otxPoolRpc.submitOtx(otx);
+  await config.buildOtxPoolRpcClient().submitOtx(otx);
 
   redirect("/swap");
 }

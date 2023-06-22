@@ -28,7 +28,7 @@ const CKB_ENVS = {
         TX_HASH:
           "0xb136eb95b34898caa716f4dd6815801971dea60167c268b947a636adb4f90028",
         INDEX: "0x0",
-        DEP_TYPE: "dep_group",
+        DEP_TYPE: "depGroup",
       },
     },
   },
