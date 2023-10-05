@@ -4,7 +4,8 @@ import { blockchain } from "@ckb-lumos/base";
 
 import { OpenTransaction } from "@/app/lib/otx";
 
-export const SWAP_FEE = BI.from("2000");
+// The OTX Pool requires a total fee of 1 CKB
+export const SWAP_FEE = BI.from("50000000");
 
 /* 66-byte zeros in hex */
 const OTX_SIGNATURE_PLACEHOLDER =
