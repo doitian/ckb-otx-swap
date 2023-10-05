@@ -15,7 +15,7 @@ export async function buildSwapProposal(
   wallet,
   locking,
   swapRequest,
-  ckbChainConfig
+  ckbChainConfig,
 ) {
   const otx = new OpenTransaction();
 
@@ -73,13 +73,13 @@ export async function buildSwapProposal(
   if (swapRequest.from.kind === "SUDT") {
     otx.meta.setAccountingInputSudt(
       wallet.sudtTypeScriptOf(swapRequest.from.identity),
-      swapRequest.from.balance
+      swapRequest.from.balance,
     );
   }
   if (swapRequest.to.kind === "SUDT") {
     otx.meta.setAccountingOutputSudt(
       wallet.sudtTypeScriptOf(swapRequest.to.identity),
-      swapRequest.to.balance
+      swapRequest.to.balance,
     );
   }
 
