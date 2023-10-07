@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${rubik.variable} ${mono.variable}`}>
-      <body className="bg-white">
+      <body className="bg-white dark:bg-black">
         <Header title={metadata.title} navigation={navigation} />
 
         <main className="relative isolate px-6 pt-16 lg:px-8">
