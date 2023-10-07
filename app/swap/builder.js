@@ -23,7 +23,7 @@ export async function buildSwapProposal(
   const from = {
     previousOutput: {
       txHash: locking.hash,
-      index: "0x1",
+      index: "0x0",
     },
     since: "0x0",
   };
@@ -126,5 +126,7 @@ function digestWithOtxPrefix(sighash, messageBuf) {
 export function signSingleAnyoneCanPay(wallet, otx, index) {
   const digest = singleAnyoneCanPayDigest(otx, index);
   const signature = wallet.signRecoverable(digest);
-  otx.pushNewWitness().setFromWitnessArgs({ lock: digest });
+  otx
+    .pushNewWitness()
+    .setFromWitnessArgs({ lock: "0x83" + signature.substring(2) });
 }

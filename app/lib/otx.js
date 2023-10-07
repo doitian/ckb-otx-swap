@@ -189,10 +189,7 @@ export class OtxOutput extends OtxMap {
       makeKey(OtxOutput.OTX_OUTPUT_LOCK_HASH_TYPE),
       bytes.hexify(blockchain.HashType.pack(output.lock.hashType))
     );
-    this.set(
-      makeKey(OtxOutput.OTX_OUTPUT_LOCK_ARGS),
-      bytes.hexify(blockchain.Bytes.pack(output.lock.args))
-    );
+    this.set(makeKey(OtxOutput.OTX_OUTPUT_LOCK_ARGS), output.lock.args);
     if (output.type !== null && output.type !== undefined) {
       this.set(
         makeKey(OtxOutput.OTX_OUTPUT_TYPE_CODE_HASH),
@@ -202,26 +199,18 @@ export class OtxOutput extends OtxMap {
         makeKey(OtxOutput.OTX_OUTPUT_TYPE_HASH_TYPE),
         bytes.hexify(blockchain.HashType.pack(output.type.hashType))
       );
-      this.set(
-        makeKey(OtxOutput.OTX_OUTPUT_TYPE_ARGS),
-        bytes.hexify(blockchain.Bytes.pack(output.type.args))
-      );
+      this.set(makeKey(OtxOutput.OTX_OUTPUT_TYPE_ARGS), output.type.args);
     }
     return this;
   }
 
   setData(data) {
-    this.set(
-      makeKey(OtxOutput.OTX_OUTPUT_DATA),
-      bytes.hexify(blockchain.Bytes.pack(data))
-    );
+    this.set(makeKey(OtxOutput.OTX_OUTPUT_DATA), data);
     return this;
   }
 
-  getData(data) {
-    return blockchain.Bytes.unpack(
-      this.get(makeKey(OtxOutput.OTX_OUTPUT_DATA))
-    );
+  getData() {
+    return this.get(makeKey(OtxOutput.OTX_OUTPUT_DATA));
   }
 
   toMolecule() {
@@ -230,9 +219,7 @@ export class OtxOutput extends OtxMap {
       hashType: blockchain.HashType.unpack(
         this.get(makeKey(OtxOutput.OTX_OUTPUT_LOCK_HASH_TYPE))
       ),
-      args: blockchain.Bytes.unpack(
-        this.get(makeKey(OtxOutput.OTX_OUTPUT_LOCK_ARGS))
-      ),
+      args: this.get(makeKey(OtxOutput.OTX_OUTPUT_LOCK_ARGS)),
     };
 
     const typeCodeHashKey = makeKey(OtxOutput.OTX_OUTPUT_TYPE_CODE_HASH);
@@ -242,9 +229,7 @@ export class OtxOutput extends OtxMap {
           hashType: blockchain.HashType.unpack(
             this.get(makeKey(OtxOutput.OTX_OUTPUT_TYPE_HASH_TYPE))
           ),
-          args: blockchain.Bytes.unpack(
-            this.get(makeKey(OtxOutput.OTX_OUTPUT_TYPE_ARGS))
-          ),
+          args: this.get(makeKey(OtxOutput.OTX_OUTPUT_TYPE_ARGS)),
         }
       : null;
 
