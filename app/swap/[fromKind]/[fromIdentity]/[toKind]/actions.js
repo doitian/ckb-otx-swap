@@ -55,7 +55,7 @@ function cellCapacity(wallet, fee) {
 
 function setOutputCapacity(txSkeleton, outputIndex, capacity) {
   return txSkeleton.update("outputs", (outputs) =>
-    outputs.update(1, (output) => ({
+    outputs.update(outputIndex, (output) => ({
       ...output,
       cellOutput: {
         ...output.cellOutput,

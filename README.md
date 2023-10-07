@@ -5,7 +5,7 @@ This is a demo to swap CKB and [SUDT](https://github.com/nervosnetwork/rfcs/blob
 1. Download [open-transaction-pool](https://github.com/EthanYuan/open-transaction-pool) and build the executable.
 
     ```bash
-    git clone https://github.com/EthanYuan/open-transaction-pool.git ../open-transaction-pool/
+    git clone https://github.com/doitian/open-transaction-pool.git ../open-transaction-pool/
     pushd ../open-transaction-pool/
     cargo build --release
     popd
@@ -37,7 +37,12 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Steps to Send a Swap Proposal
 
-- First go to the assets page http://localhost:3000/assets
-- Claim CKB via Faucet
-- Issue SUDT when there are some CKBs in the account.
-- Use the buttons in the assets list to initiate the swap proposal.
+-   First go to the assets page http://localhost:3000/assets
+-   Claim CKB via Faucet
+-   Issue SUDT when there are some CKBs in the account.
+-   Use the buttons in the assets list to initiate the swap proposal.
+
+## Attentions
+
+-   As of now, the open transaction pool lacks a P2P extension for broadcasting open transactions. Thus, it is essential to share a single pool instance among multiple users.
+-   The demo requires exact match on the amount of CKB and SUDT.

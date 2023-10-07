@@ -4,7 +4,8 @@ import { blockchain } from "@ckb-lumos/base";
 
 import { OpenTransaction } from "@/app/lib/otx";
 
-export const SWAP_FEE = BI.from("2000");
+// The OTX Pool requires a total fee of 1 CKB
+export const SWAP_FEE = BI.from("50000000");
 
 /* 66-byte zeros in hex */
 const OTX_SIGNATURE_PLACEHOLDER =
@@ -14,7 +15,7 @@ export async function buildSwapProposal(
   wallet,
   locking,
   swapRequest,
-  ckbChainConfig
+  ckbChainConfig,
 ) {
   const otx = new OpenTransaction();
 
@@ -22,7 +23,7 @@ export async function buildSwapProposal(
   const from = {
     previousOutput: {
       txHash: locking.hash,
-      index: "0x1",
+      index: "0x0",
     },
     since: "0x0",
   };
@@ -72,13 +73,13 @@ export async function buildSwapProposal(
   if (swapRequest.from.kind === "SUDT") {
     otx.meta.setAccountingInputSudt(
       wallet.sudtTypeScriptOf(swapRequest.from.identity),
-      swapRequest.from.balance
+      swapRequest.from.balance,
     );
   }
   if (swapRequest.to.kind === "SUDT") {
     otx.meta.setAccountingOutputSudt(
       wallet.sudtTypeScriptOf(swapRequest.to.identity),
-      swapRequest.to.balance
+      swapRequest.to.balance,
     );
   }
 
@@ -88,7 +89,7 @@ export async function buildSwapProposal(
 export function singleAnyoneCanPayDigest(otx, index) {
   const inputBuf = otx.inputs[index].toMolecule();
   const outputBuf = otx.outputs[index].toMolecule();
-  const dataBuf = bytes.bytify(otx.outputs[index].getData());
+  const dataBuf = blockchain.Bytes.pack(otx.outputs[index].getData());
 
   const witness = {
     lock: OTX_SIGNATURE_PLACEHOLDER,
@@ -115,7 +116,7 @@ export function singleAnyoneCanPayDigest(otx, index) {
 function digestWithOtxPrefix(sighash, messageBuf) {
   const hasher = new utils.CKBHasher();
   hasher.update(bytes.bytifyRawString("COTX "));
-  hasher.update(bytes.bytify(sighash));
+  hasher.update(bytes.bytifyRawString(parseInt(sighash, 16).toString()));
   hasher.update(bytes.bytifyRawString(":\n"));
   hasher.update(bytes.bytifyRawString(messageBuf.length.toString()));
   hasher.update(messageBuf);
@@ -125,5 +126,7 @@ function digestWithOtxPrefix(sighash, messageBuf) {
 export function signSingleAnyoneCanPay(wallet, otx, index) {
   const digest = singleAnyoneCanPayDigest(otx, index);
   const signature = wallet.signRecoverable(digest);
-  otx.pushNewWitness().setFromWitnessArgs({ lock: digest });
+  otx
+    .pushNewWitness()
+    .setFromWitnessArgs({ lock: "0x83" + signature.substring(2) });
 }
