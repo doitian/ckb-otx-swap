@@ -89,7 +89,7 @@ export async function buildSwapProposal(
 export function singleAnyoneCanPayDigest(otx, index) {
   const inputBuf = otx.inputs[index].toMolecule();
   const outputBuf = otx.outputs[index].toMolecule();
-  const dataBuf = bytes.bytify(otx.outputs[index].getData());
+  const dataBuf = blockchain.Bytes.pack(otx.outputs[index].getData());
 
   const witness = {
     lock: OTX_SIGNATURE_PLACEHOLDER,
@@ -116,7 +116,7 @@ export function singleAnyoneCanPayDigest(otx, index) {
 function digestWithOtxPrefix(sighash, messageBuf) {
   const hasher = new utils.CKBHasher();
   hasher.update(bytes.bytifyRawString("COTX "));
-  hasher.update(bytes.bytify(sighash));
+  hasher.update(bytes.bytifyRawString(parseInt(sighash, 16).toString()));
   hasher.update(bytes.bytifyRawString(":\n"));
   hasher.update(bytes.bytifyRawString(messageBuf.length.toString()));
   hasher.update(messageBuf);
